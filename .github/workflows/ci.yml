@@ -1,0 +1,37 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install package
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .
+
+      - name: Run test suite
+        run: python3 -m unittest discover -s tests -v
+
+      - name: Smoke test the installed command
+        run: |
+          mkdir -p /tmp/watched && echo "hello" > /tmp/watched/a.txt
+          export CUSTODIAN_KEY="ci-only-key"
+          custodian baseline /tmp/watched --out /tmp/baseline.json
+          custodian check /tmp/watched --baseline /tmp/baseline.json
+          echo "changed" > /tmp/watched/a.txt
+          if custodian check /tmp/watched --baseline /tmp/baseline.json; then
+            echo "expected a non-zero exit after modifying a watched file" && exit 1
+          fi

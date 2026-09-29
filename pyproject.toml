@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "custodian-fim"
+version = "0.1.0"
+description = "A file integrity monitor: baseline a directory with a signed manifest, then detect what changed."
+readme = "README.md"
+requires-python = ">=3.8"
+license = { text = "MIT" }
+authors = [{ name = "Rhizzy" }]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Security",
+    "Environment :: Console",
+]
+
+[project.urls]
+Homepage = "https://github.com/rhizzyxvaici171-cloud/custodian"
+
+[project.scripts]
+custodian = "custodian.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["custodian*"]
